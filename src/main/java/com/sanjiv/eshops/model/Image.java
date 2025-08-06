@@ -22,7 +22,7 @@ public class Image {
     private String fileType;
 
     @Lob
-    private Blob blob;
+    private Blob longBlob;
     private String downloadUrl;
 
 //    Many images belong to one product
