@@ -22,10 +22,10 @@ public class Image {
     private String fileType;
 
     @Lob
-    private Blob longBlob;
+    private Blob image;
     private String downloadUrl;
 
-//    Many images belong to one product
+    //    Many images belong to one product
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

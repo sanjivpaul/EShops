@@ -28,17 +28,17 @@ public class ProductService implements IProductService {
 //        then set as the new product category
 
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
-                .orElseGet(()->{
+                .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
                     return categoryRepository.save(newCategory);
                 });
         request.setCategory(category);
         return productRepository.save(createProduct(request, category));
 
-        return null;
+//        return null;
     }
 
-    private Product createProduct(AddProductRequest request, Category category){
+    private Product createProduct(AddProductRequest request, Category category) {
         return new Product(
                 request.getName(),
                 request.getBrand(),
@@ -66,12 +66,12 @@ public class ProductService implements IProductService {
     public Product updateProduct(ProductUpdateRequest request, Long productId) {
         return productRepository.findById(productId)
                 .map(existingProduct -> updateExistingProduct(existingProduct, request))
-                .map(productRepository :: save)
-                .orElseThrow(()->new  ProductNotFoundException("Product not found!"));
+                .map(productRepository::save)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found!"));
 
     }
 
-    private Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request){
+    private Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request) {
         existingProduct.setName(request.getName());
         existingProduct.setBrand(request.getBrand());
         existingProduct.setPrice(request.getPrice());
