@@ -2,12 +2,14 @@ package com.sanjiv.eshops.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -30,4 +32,5 @@ public class CartItem {
     public void setTotalPrice(){
         this.totalPrice = this.unitPrice.multiply(new BigDecimal(quantity));
     }
+
 }
