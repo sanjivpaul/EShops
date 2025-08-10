@@ -1,5 +1,6 @@
 package com.sanjiv.eshops.service.product;
 
+import com.sanjiv.eshops.dto.ProductDto;
 import com.sanjiv.eshops.model.Product;
 import com.sanjiv.eshops.request.AddProductRequest;
 import com.sanjiv.eshops.request.ProductUpdateRequest;
@@ -19,4 +20,7 @@ public interface IProductService {
     List<Product> getProductsByBrandAndName(String brand, String name);
     Long countProductsByBrandAndName(String brand, String name);
 
+    List<ProductDto> getConvertedProducts(List<Product> products);
+
+    ProductDto convertToDto(Product product);
 }
