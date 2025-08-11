@@ -34,7 +34,7 @@ public class CartService implements ICartService {
     public void clearCart(Long id) {
         Cart cart = getCart(id);
         cartItemRepository.deleteAllByCartId(id);
-        cart.getCartItems().clear();
+        cart.getItems().clear();
         cartRepository.deleteById(id);
 
     }
@@ -42,7 +42,7 @@ public class CartService implements ICartService {
     @Override
     public BigDecimal getTotalPrice(Long id) {
         Cart cart = getCart(id);
-//        return cart.getCartItems()
+//        return cart.getItems()
 //                .stream()
 //                .map(CartItem :: getTotalPrice)
 //                .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -51,11 +51,17 @@ public class CartService implements ICartService {
     }
 
     @Override
+//    public Long initializeNewCart() {
+//        Cart newCart = new Cart();
+//        Long newCartId = cartIdGenerator.incrementAndGet();
+//        newCart.setId(newCartId);
+//        return cartRepository.save(newCart).getId();
+//
+//    }
     public Long initializeNewCart() {
         Cart newCart = new Cart();
-        Long newCartId = cartIdGenerator.incrementAndGet();
-        newCart.setId(newCartId);
-        return cartRepository.save(newCart).getId();
-
+        // Let Hibernate generate the ID
+        Cart savedCart = cartRepository.save(newCart);
+        return savedCart.getId();  // Get generated ID
     }
 }
