@@ -1,6 +1,10 @@
 package com.sanjiv.eshops.model;
 
 import jakarta.persistence.*;
+<<<<<<< HEAD
+=======
+import lombok.AllArgsConstructor;
+>>>>>>> 9d2e920a5ee2411621fb19bf5b18ac802ee9dadc
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
