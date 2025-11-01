@@ -64,4 +64,9 @@ public class CartService implements ICartService {
         Cart savedCart = cartRepository.save(newCart);
         return savedCart.getId();  // Get generated ID
     }
+
+    @Override
+    public Cart getCartByUserId(Long userId) {
+        return cartRepository.findByUserId(userId);
+    }
 }

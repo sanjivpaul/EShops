@@ -8,11 +8,13 @@ import com.sanjiv.eshops.model.OrderItem;
 import com.sanjiv.eshops.model.Product;
 import com.sanjiv.eshops.repository.OrderRepository;
 import com.sanjiv.eshops.repository.ProductRepository;
+import com.sanjiv.eshops.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -20,16 +22,29 @@ import java.util.List;
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final CartService cartService;
 
     @Override
     public Order placeOrder(Long userId) {
-        return null;
+        Cart cart = cartService.getCartByUserId(userId); // fetch cart by user id
+        Order order = createOrder(cart); // create order of that cart
+        List<OrderItem> orderItemList = createOrderItems(order, cart);
+        order.setOrderItems(new HashSet<>(orderItemList)); // set orders
+        order.setTotalAmount(calculateTotalPrice(orderItemList)); // set total amounts
+        Order savedOrder = orderRepository.save(order); // save order
+
+//        after order saved clear the cart
+        cartService.clearCart(cart.getId());
+
+        return savedOrder; // return saved order
     }
 
     private Order createOrder(Cart cart) {
         Order order = new Order();
 
 //        set the user
+        order.setUser(cart.getUser());
+
         order.setOrderStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDate.now());
 
@@ -61,5 +76,10 @@ public class OrderService implements IOrderService {
     public Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+    }
+
+    @Override
+    public List<Order> getUserOrders(Long userId){
+        return orderRepository.findByUserId(userId);
     }
 }
