@@ -1,0 +1,67 @@
+package com.sanjiv.eshops.controller;
+
+import com.sanjiv.eshops.exception.AlreadyExistsException;
+import com.sanjiv.eshops.exception.ResourceNotFoundException;
+import com.sanjiv.eshops.model.User;
+import com.sanjiv.eshops.request.CreateUserRequest;
+import com.sanjiv.eshops.request.UserUpdateRequest;
+import com.sanjiv.eshops.response.ApiResponse;
+import com.sanjiv.eshops.service.user.IUserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("${api.prefix}/users")
+public class UserController {
+    private final IUserService userService;
+
+    @GetMapping("/v1/{userId}/user")
+    public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId){
+        try {
+            User user = userService.getUserById(userId);
+            return ResponseEntity.ok(new ApiResponse("Success!", user));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null)) ;       }
+
+    }
+
+    @PostMapping("/v1/add")
+    public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request){
+        try {
+            User user = userService.createUser(request);
+            return ResponseEntity.ok(new ApiResponse("Create User Success", user));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+
+    }
+
+    @PutMapping("/v1/{userId}/update")
+    public ResponseEntity<ApiResponse> updateUser(@RequestBody UserUpdateRequest request, @PathVariable Long userId){
+        try {
+            User user = userService.updateUser(request, userId);
+            return ResponseEntity.ok(new ApiResponse("Update User Success!", user));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+
+    }
+
+    @DeleteMapping("/v1/{userId}/delete")
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId){
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(new ApiResponse("Delete User Success!", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+}

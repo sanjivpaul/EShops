@@ -1,5 +1,6 @@
 package com.sanjiv.eshops.controller;
 
+import com.sanjiv.eshops.dto.OrderDto;
 import com.sanjiv.eshops.model.Order;
 import com.sanjiv.eshops.response.ApiResponse;
 import com.sanjiv.eshops.service.order.IOrderService;
@@ -7,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,14 +28,25 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/v1/{orderId/orders}")
+    @GetMapping("/v1/{orderId/order}")
     public ResponseEntity<ApiResponse> getOrderById(@PathVariable Long orderId){
         try {
-            Order order = orderService.getOrder(orderId);
+            OrderDto order = orderService.getOrder(orderId);
             return ResponseEntity.ok(new ApiResponse("Order fetched", order));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error fetch product", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/v1/{userId}/order")
+    public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId){
+        try {
+            List<OrderDto> order = orderService.getUserOrders(userId);
+            return ResponseEntity.ok(new ApiResponse("Order fetched", order));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error fetch orders", e.getMessage()));
         }
     }
 }
