@@ -28,7 +28,7 @@ public class User {
 
 //    One User have one card and on delete user card will delete also
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cart car;
+    private Cart cart;
 
 //    One User have multiple orders
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

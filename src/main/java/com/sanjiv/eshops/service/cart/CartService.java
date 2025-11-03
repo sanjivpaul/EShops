@@ -2,12 +2,14 @@ package com.sanjiv.eshops.service.cart;
 
 import com.sanjiv.eshops.exception.ResourceNotFoundException;
 import com.sanjiv.eshops.model.Cart;
+import com.sanjiv.eshops.model.User;
 import com.sanjiv.eshops.repository.CartItemRepository;
 import com.sanjiv.eshops.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -58,11 +60,20 @@ public class CartService implements ICartService {
 //        return cartRepository.save(newCart).getId();
 //
 //    }
-    public Long initializeNewCart() {
-        Cart newCart = new Cart();
-        // Let Hibernate generate the ID
-        Cart savedCart = cartRepository.save(newCart);
-        return savedCart.getId();  // Get generated ID
+//    public Long initializeNewCart() {
+//        Cart newCart = new Cart();
+//        // Let Hibernate generate the ID
+//        Cart savedCart = cartRepository.save(newCart);
+//        return savedCart.getId();  // Get generated ID
+//    }
+
+    public Cart initializeNewCart(User user){
+        return Optional.ofNullable(getCartByUserId(user.getId()))
+                .orElseGet(()->{
+                    Cart cart = new Cart();
+                    cart.setUser(user);
+                    return cartRepository.save(cart);
+                });
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.sanjiv.eshops.service.cart;
 
 import com.sanjiv.eshops.model.Cart;
+import com.sanjiv.eshops.model.User;
 
 import java.math.BigDecimal;
 
@@ -11,7 +12,7 @@ public interface ICartService {
 
     BigDecimal getTotalPrice(Long id);
 
-    Long initializeNewCart();
+    Cart initializeNewCart(User user);
 
     Cart getCartByUserId(Long userId);
 }

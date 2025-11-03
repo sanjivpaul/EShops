@@ -1,9 +1,12 @@
 package com.sanjiv.eshops.controller;
 
 import com.sanjiv.eshops.exception.ResourceNotFoundException;
+import com.sanjiv.eshops.model.Cart;
+import com.sanjiv.eshops.model.User;
 import com.sanjiv.eshops.response.ApiResponse;
 import com.sanjiv.eshops.service.cart.ICartItemService;
 import com.sanjiv.eshops.service.cart.ICartService;
+import com.sanjiv.eshops.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,20 +19,26 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class CartItemController {
     private final ICartItemService cartItemService;
     private final ICartService cartService;
+    private final IUserService userService;
 
 
     @PostMapping("/item/add")
-    public ResponseEntity<ApiResponse> addItemToCart(@RequestParam (required = false) Long cartId,
+    public ResponseEntity<ApiResponse> addItemToCart(
+//            @RequestParam (required = false) Long cartId,
                                                      @RequestParam Long productId,
                                                      @RequestParam Integer quantity) {
 
         try {
 //            if cart id is not provided, then initialise a cartId
-            if (cartId == null) {
-                cartId = cartService.initializeNewCart();
-            }
+//            if (cartId == null) {
+//                cartId = cartService.initializeNewCart();
+//            }
+
+//            TODO: user logic
+            User user = userService.getUserById(1L);
+            Cart cart = cartService.initializeNewCart(user);
             
-            cartItemService.addItemToCart(cartId, productId, quantity);
+            cartItemService.addItemToCart(cart.getId(), productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Add Item Success!", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));

@@ -10,6 +10,7 @@ import com.sanjiv.eshops.model.Product;
 import com.sanjiv.eshops.repository.OrderRepository;
 import com.sanjiv.eshops.repository.ProductRepository;
 import com.sanjiv.eshops.service.cart.CartService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,16 @@ public class OrderService implements IOrderService {
     private final CartService cartService;
     private final ModelMapper modelMapper;
 
+//    So @Transactional basically tells Spring:
+//            “Please manage a transaction for this method, so my database changes happen properly.”
+    @Transactional
     @Override
     public Order placeOrder(Long userId) {
         Cart cart = cartService.getCartByUserId(userId); // fetch cart by user id
+
+//        TODO: check cart if not cart by user then return a message
+//        TODO: If Card length is 0 then return me message select item to place orders
+
         Order order = createOrder(cart); // create order of that cart
         List<OrderItem> orderItemList = createOrderItems(order, cart);
         order.setOrderItems(new HashSet<>(orderItemList)); // set orders
@@ -88,7 +96,8 @@ public class OrderService implements IOrderService {
         return orders.stream().map(this::convertToDto).toList();
     }
 
-    private OrderDto convertToDto(Order order){
+    @Override // convert to interface level
+    public OrderDto convertToDto(Order order){
         return modelMapper.map(order, OrderDto.class);
     }
 }
