@@ -2,6 +2,7 @@ package com.sanjiv.eshops.service.product;
 
 import com.sanjiv.eshops.dto.ImageDto;
 import com.sanjiv.eshops.dto.ProductDto;
+import com.sanjiv.eshops.exception.AlreadyExistsException;
 import com.sanjiv.eshops.exception.ProductNotFoundException;
 import com.sanjiv.eshops.model.Category;
 import com.sanjiv.eshops.model.Image;
@@ -34,6 +35,10 @@ public class ProductService implements IProductService {
 //        If No, then save it as new category
 //        then set as the new product category
 
+        if(productExist(request.getName(), request.getBrand())){
+            throw new AlreadyExistsException(request.getName() + " " + request.getBrand()+ " " + "Already exist, you may update this product instead!");
+        }
+
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -43,6 +48,10 @@ public class ProductService implements IProductService {
         return productRepository.save(createProduct(request, category));
 
 //        return null;
+    }
+
+    private boolean productExist(String name, String brand){
+        return productRepository.existsByNameAndBrand(name, brand);
     }
 
     private Product createProduct(AddProductRequest request, Category category) {

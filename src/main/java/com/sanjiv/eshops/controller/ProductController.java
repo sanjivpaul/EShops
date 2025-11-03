@@ -1,6 +1,7 @@
 package com.sanjiv.eshops.controller;
 
 import com.sanjiv.eshops.dto.ProductDto;
+import com.sanjiv.eshops.exception.AlreadyExistsException;
 import com.sanjiv.eshops.exception.ProductNotFoundException;
 import com.sanjiv.eshops.exception.ResourceNotFoundException;
 import com.sanjiv.eshops.model.Product;
@@ -14,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,13 +48,13 @@ public class ProductController {
             Product theProduct = productService.addProduct(product);
             ProductDto productDto = productService.convertToDto(theProduct); // for single image
             return ResponseEntity.ok(new ApiResponse("Add Product Success!", productDto));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
 
     }
 
-    @PutMapping("/product/{productId}/update")
+    @PutMapping("/update/{productId}")
     public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable Long productId){
         try {
             Product updatedProduct = productService.updateProduct(request, productId);
