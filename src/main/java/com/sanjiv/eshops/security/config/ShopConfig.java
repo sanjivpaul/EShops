@@ -1,4 +1,4 @@
-package com.sanjiv.eshops.config;
+package com.sanjiv.eshops.security.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
